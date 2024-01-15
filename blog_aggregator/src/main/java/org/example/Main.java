@@ -15,9 +15,9 @@ public class Main {
         String filePath = "output.html";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write(html);
-            System.out.println("Файл успешно создан: " + filePath);
+            System.out.println("The file has been successfully created: " + filePath);
         } catch (IOException e) {
-            System.err.println("Ошибка при создании файла: " + e.getMessage());
+            System.err.println("Error during file creation: " + e.getMessage());
         }
 
     }
