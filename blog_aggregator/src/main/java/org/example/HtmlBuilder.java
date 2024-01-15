@@ -19,7 +19,8 @@ public class HtmlBuilder {
         List<RssItemDom> rssItemDomList = rssParser.parse();
         rssItemDomList.removeIf(rss -> rss.getPubDate() == null);
         rssItemDomList.sort(Comparator.comparing(RssItemDom::getPubDate));
-        rssItemDomList = rssItemDomList.subList(0, 50);
+        var countPosts = 50;
+        rssItemDomList = rssItemDomList.subList(0, countPosts);
         return html(
                 head(
                         title("Blog aggregator")
