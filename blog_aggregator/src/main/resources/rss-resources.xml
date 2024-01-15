@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <item>http://rss.cnn.com/rss/cnn_topstories.rss</item>
+    <item>https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml</item>
+    <item>https://www.theguardian.com/world/rss</item>
+    <item>https://feeds.feedburner.com/TechCrunch</item>
+    <item>https://www.reddit.com/r/technology/.rss</item>
+    <item>https://www.wired.com/feed/</item>
+    <item>https://news.ycombinator.com/rss</item>
+</resources>
