@@ -15,3 +15,7 @@ The *rss-resources.xml* file stores rss feeds. To add a feed to the aggregation 
 <item>https://news.ycombinator.com/rss</item>
 </resources>
 ```
+## Start
+```sh
+make start
+```
