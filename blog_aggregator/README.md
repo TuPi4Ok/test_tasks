@@ -1,3 +1,4 @@
+<a href="https://codeclimate.com/github/TuPi4Ok/test_tasks/maintainability"><img src="https://api.codeclimate.com/v1/badges/a2cd67b3d2d4b317e506/maintainability" /></a>
 ## blog_aggregator
 blog_aggregator is rss feed aggregation application. 
 The result of its work is *output.html* file, which contains links to 50 latest posts of aggregated resources.
