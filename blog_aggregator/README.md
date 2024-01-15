@@ -2,7 +2,7 @@
 blog_aggregator is rss feed aggregation application. 
 The result of its work is *output.html* file, which contains links to 50 latest posts of aggregated resources.
 ## Resources
-The *rss-resources.xml* file stores rss feeds. To add a feed to the aggregation you need to add an item tag with a link to the resource.  
+The [*rss-resources.xml*](./src/main/resources/rss-resources.xml) file stores rss feeds. To add a feed to the aggregation you need to add an item tag with a link to the resource.  
 **Example:**
 ```xml
 <resources>
