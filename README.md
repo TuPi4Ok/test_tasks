@@ -4,3 +4,5 @@ This repository provides a solution to the MediaSoft test case. You can view the
 # Applications
 There are 3 applications in this repository:
 * [blog_aggregator](./blog_aggregator) 
+* [postal_items](./postal_items) 
+* [currency_calculator](./currency_calculator) 
