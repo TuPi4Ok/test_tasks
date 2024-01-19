@@ -1,0 +1,24 @@
+name: CI/CD with Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SPRING_PROFILES_ACTIVE: "development"
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t tupi4ok/post_image:latest .
+        docker push tupi4ok/post_image:latest
+      working-directory: app
