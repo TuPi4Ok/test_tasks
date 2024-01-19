@@ -8,7 +8,11 @@ services:
       - "5000:5000"
     environment:
       SPRING_PROFILES_ACTIVE: production
-      DB_URI: mongodb://db:27018/Dev_db
+      DB_URI: mongodb://localhost:27018/Dev_db
+      MONGO_USERNAME: root
+      MONGO_PASSWORD: password
+    networks:
+      - my_network
   db:
     image: mongo
     restart: always
@@ -16,8 +20,9 @@ services:
       - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - mongodata:/var/lib/mongo/data
-volumes:
-  mongodata:
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - my_network
+networks:
+  my_network:
+    driver: bridge
