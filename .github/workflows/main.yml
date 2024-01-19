@@ -24,7 +24,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-          build-root-directory: app
+          build-root-directory: postal_items
   docker_push:
     runs-on: ubuntu-latest
     env:
