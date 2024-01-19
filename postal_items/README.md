@@ -2,7 +2,7 @@
 postal_items - is a REST API that allows tracking postal items.
 The system registers postal items letters, parcels, their movement between post offices, and also implements the ability to obtain information and the entire history of movement of a particular postal item.
 
-* Also operations are realized:
+Also operations are realized: 
 
 * registration of the mail item
 
