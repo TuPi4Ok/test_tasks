@@ -1,6 +1,7 @@
 FROM eclipse-temurin:17
 WORKDIR /app
 COPY . .
+RUN chmod +x /app/gradlew
 ARG GRADLE_VERSION=8.5
 RUN apt-get update && apt-get install -yq make unzip
 RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
@@ -9,4 +10,4 @@ RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-b
 ENV GRADLE_HOME=/opt/gradle
 RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
 ENV PATH=$PATH:$GRADLE_HOME/bin
-CMD ["./gradlew", "bootRun"]
+CMD ["make", "start"]
