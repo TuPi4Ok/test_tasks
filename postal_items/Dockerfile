@@ -9,4 +9,4 @@ RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-b
 ENV GRADLE_HOME=/opt/gradle
 RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
 ENV PATH=$PATH:$GRADLE_HOME/bin
-CMD ["make", "start"]
+CMD ["./gradlew", "bootRun"]
