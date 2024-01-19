@@ -1,16 +1,4 @@
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2console
-  datasource:
-    url: jdbc:h2:./Dev_db
-    username: 'sa'
-    password:
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: none
-    show-sql: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/Dev_db

@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailingDto {
-    private String type;
-    private int recipientPostalCode;
-    private String recipientAddress;
-    private String recipientName;
+public class PostOfficeDto {
+    private int postalCode;
+    private String name;
+    private String address;
 }

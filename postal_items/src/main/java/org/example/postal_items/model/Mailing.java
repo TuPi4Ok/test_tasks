@@ -1,31 +1,45 @@
 package org.example.postal_items.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.annotation.processing.Generated;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Entity
+@Document
 public class Mailing {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
+    private long mailingCode;
     private String type;
-    private long recipientPostalCode;
+    private int recipientPostalCode;
     private String recipientAddress;
     private String recipientName;
-    @Enumerated
-    private MailingStatus status;
-    @ManyToOne
-    @JoinColumn(name = "postal_code")
     private PostOffice currentPostOffice;
-    @ManyToMany(mappedBy = "mailings")
+    private boolean isReceived;
     private List<PostOffice> postOffices;
+
+    public Mailing() {
+        isReceived = false;
+        postOffices = new ArrayList<>();
+    }
+
+    public MailingStatus getStatus() {
+        if(currentPostOffice == null)
+            return MailingStatus.IN_TRANSIT;
+        else if (currentPostOffice.getPostalCode() == recipientPostalCode)
+            return MailingStatus.AT_RECIPIENT_POST_OFFICE;
+        return MailingStatus.AT_INTERMEDIATE_POST_OFFICE;
+    }
+
+    public void setCurrentPostOffice(PostOffice currentPostOffice) {
+        this.currentPostOffice = currentPostOffice;
+        if (currentPostOffice != null)
+            postOffices.add(currentPostOffice);
+    }
 }
