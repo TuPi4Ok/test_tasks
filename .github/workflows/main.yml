@@ -18,8 +18,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Make Gradlew executable
-        run: chmod +x ${{github.workspace}}/app/gradlew
-        working-directory: app
+        run: chmod +x ${{github.workspace}}/postal_items/gradlew
+        working-directory: postal_items
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
