@@ -19,3 +19,9 @@ The *rss-resources.xml* file stores rss feeds. To add a feed to the aggregation 
 ```sh
 make start
 ```
+## Tech stack
+* Java 17
+* JAXB
+* DOM
+* J2Html
+* OkHTTP
