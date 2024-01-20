@@ -11,24 +11,13 @@ services:
       DB_URI: mongodb://root:example@mongo:27017/Prod_db?authSource=admin
       MONGO_USERNAME: root
       MONGO_PASSWORD: example
-#    networks:
-#      - my_network
   mongo:
     image: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-#  db:
-#    image: mongo
-#    restart: always
-#    ports:
-#      - "27018:27017"
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: password
-#    networks:
-#      - my_network
-#networks:
-#  my_network:
-#    driver: bridge
+    volumes:
+      - mongodb-data:/data/db
+volumes:
+  mongodb-data:
