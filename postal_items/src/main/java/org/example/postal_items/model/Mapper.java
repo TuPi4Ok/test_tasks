@@ -1,6 +1,5 @@
 package org.example.postal_items.model;
 
-import liquibase.command.CommandOverride;
 import org.example.postal_items.model.dto.MailingDto;
 import org.example.postal_items.model.dto.PostOfficeDto;
 import org.mapstruct.MappingConstants;
