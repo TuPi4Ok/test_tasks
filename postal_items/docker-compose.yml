@@ -3,12 +3,12 @@ services:
   app:
     image: tupi4ok/post_image:latest
     depends_on:
-      - db
+      - mongo
     ports:
       - "5000:5000"
     environment:
       SPRING_PROFILES_ACTIVE: production
-      DB_URI: mongodb://root:example@mongo:27017/Dev_db
+      DB_URI: mongodb://root:example@mongo:27017/
       MONGO_USERNAME: root
       MONGO_PASSWORD: example
 #    networks:

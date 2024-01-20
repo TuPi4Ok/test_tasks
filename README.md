@@ -3,6 +3,6 @@
 This repository provides a solution to the MediaSoft test case. You can view the assignment [here](https://drive.google.com/file/d/1obl6-j36xkLszszRPnj0enWxPX-nzzuQ/view).
 # Applications
 There are 3 applications in this repository:
-* [blog_aggregator](./blog_aggregator) 
-* [postal_items](./postal_items) 
-* [currency_calculator](./currency_calculator) 
+* [blog_aggregator](./blog_aggregator) - RSS parsing application
+* [postal_items](./postal_items)  - REST API for tracking postal items
+* [currency_calculator](./currency_calculator) - in progress

@@ -24,3 +24,8 @@ doker compose up
 ```
 # Swagger documentation
 By launching the application you can view the documentation at: http://localhost:5000/api/swagger-ui/
+# Tech stack
+* Spring framework (data, web)
+* MongoDB
+* JUnit 5
+* Docker
