@@ -9,8 +9,6 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: production
       DB_URI: mongodb://db:27018/Dev_db
-      MONGO_USERNAME: root
-      MONGO_PASSWORD: password
     networks:
       - my_network
   db:
