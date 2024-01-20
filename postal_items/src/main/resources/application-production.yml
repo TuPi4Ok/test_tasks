@@ -4,3 +4,4 @@ spring:
       uri: ${DB_URI}
       username: ${MONGO_USERNAME}
       password: ${MONGO_PASSWORD}
+      authentication-database: admin
