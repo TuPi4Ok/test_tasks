@@ -23,7 +23,7 @@ Also operations are realized:
 doker compose up
 ```
 # Swagger documentation
-By launching the application you can view the documentation at: http://localhost:5000/api/swagger-ui/
+By launching the application you can view the documentation at: http://localhost:5000/api/v1/swagger-ui/index.html
 # Tech stack
 * Spring framework (data, web)
 * MongoDB
