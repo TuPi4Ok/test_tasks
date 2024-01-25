@@ -33,8 +33,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
+@AutoConfigureDataMongo
 @SpringBootTest
-@ImportAutoConfiguration(classes = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class PostOfficeControllerTests {
     @Autowired
     MongoTemplate mongoTemplate;

@@ -1,16 +1,21 @@
 package org.example.postal_items;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoClients;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.IMongodConfig;
+import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
 import org.example.postal_items.model.Mailing;
 import org.example.postal_items.model.MailingStatus;
 import org.example.postal_items.model.PostOffice;
 import org.example.postal_items.model.dto.MailingDto;
 import org.instancio.Instancio;
 import org.instancio.Select;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -40,13 +45,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @AutoConfigureMockMvc
+@AutoConfigureDataMongo
 @SpringBootTest
-@ImportAutoConfiguration(classes = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 class MailingControllerTests {
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper om;
     private List<PostOffice> postOfficeList = new ArrayList<>();
@@ -68,7 +73,6 @@ class MailingControllerTests {
                 .create();
         return mailing;
     }
-
     @BeforeEach
     public void beforeEach() {
         for (int i = 0; i < 5; i++) {
