@@ -1,3 +1,4 @@
+<a href="https://codeclimate.com/github/TuPi4Ok/test_tasks/test_coverage"><img src="https://api.codeclimate.com/v1/badges/a2cd67b3d2d4b317e506/test_coverage" /></a>
 # postal_items
 postal_items - is a REST API that allows tracking postal items.
 The system registers postal items letters, parcels, their movement between post offices, and also implements the ability to obtain information and the entire history of movement of a particular postal item.
