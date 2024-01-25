@@ -30,6 +30,8 @@ public class Mailing {
     }
 
     public MailingStatus getStatus() {
+        if(isReceived())
+            return MailingStatus.IS_RECEIVED;
         if(currentPostOffice == null)
             return MailingStatus.IN_TRANSIT;
         else if (currentPostOffice.getPostalCode() == recipientPostalCode)

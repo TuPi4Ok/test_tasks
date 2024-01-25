@@ -64,11 +64,7 @@ public class MailingService {
     }
 
     public Mailing createMailing(Mailing mailing, int postalCode) throws BadRequestException {
-        try {
-            postOfficeService.getPostOfficeByPostalCode(mailing.getRecipientPostalCode());
-        } catch (ResponseStatusException e) {
-            throw new BadRequestException("The recipient's post office does not exist.");
-        }
+        postOfficeService.getPostOfficeByPostalCode(mailing.getRecipientPostalCode());
         mailing.setCurrentPostOffice(postOfficeService.getPostOfficeByPostalCode(postalCode));
         mailing.setMailingCode(getNextMailingCode());
         mailing = mailingRepository.save(mailing);
@@ -92,9 +88,9 @@ public class MailingService {
 
     public Mailing receiptMailing(long mailingCode) throws BadRequestException {
         Mailing mailing = getMailingByMailingCode(mailingCode);
+        if(mailing.getStatus() != MailingStatus.AT_RECIPIENT_POST_OFFICE)
+            throw new BadRequestException("Mailing is at another post office");
         mailing.setReceived(true);
-        if(mailing.getStatus() == MailingStatus.AT_RECIPIENT_POST_OFFICE)
-            return mailingRepository.save(mailing);
-        throw new BadRequestException("Mailing is at another post office");
+        return mailingRepository.save(mailing);
     }
 }
