@@ -47,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MailingControllerTests {
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -91,6 +92,8 @@ class MailingControllerTests {
     public void afterEach() {
         mongoTemplate.remove(new Query(), "postOffice");
         mongoTemplate.remove(new Query(), "mailing");
+        postOfficeList.clear();
+        mailingList.clear();
     }
     @Test
     public void createMailinTestPositive() throws Exception {

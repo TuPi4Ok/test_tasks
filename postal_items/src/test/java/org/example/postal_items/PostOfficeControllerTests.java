@@ -10,6 +10,7 @@ import org.instancio.Select;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataM
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -35,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostOfficeControllerTests {
     @Autowired
     MongoTemplate mongoTemplate;
@@ -63,6 +67,7 @@ public class PostOfficeControllerTests {
     public void afterEach() {
         mongoTemplate.remove(new Query(), "postOffice");
         mongoTemplate.remove(new Query(), "mailing");
+        postOfficeList.clear();
     }
 
     @Test
@@ -97,7 +102,6 @@ public class PostOfficeControllerTests {
                 .getResponse();
 
         var body = result.getContentAsString();
-
         assertThat(body).contains(postOfficeList.get(0).getName(),postOfficeList.get(2).getName(),postOfficeList.get(4).getName());
     }
 
