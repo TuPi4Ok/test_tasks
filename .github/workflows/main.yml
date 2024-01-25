@@ -25,6 +25,8 @@ jobs:
         with:
           arguments: build
           build-root-directory: postal_items
+
+          
   docker_push:
     needs: build
     runs-on: ubuntu-latest
@@ -42,3 +44,33 @@ jobs:
         docker build -t tupi4ok/post_image:latest .
         docker push tupi4ok/post_image:latest
       working-directory: postal_items
+
+      
+  test_report:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SPRING_PROFILES_ACTIVE: "development"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Make Gradlew executable
+        run: chmod +x ${{github.workspace}}/postal_items/gradlew
+        working-directory: postal_items
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+          build-root-directory: postal_items
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+           CC_TEST_REPORTER_ID: ${{secrets.TESTCOVERAGE}}
+           JACOCO_SOURCE_PATH: postal_items/src/main/java
+        with:
+           coverageCommand: make report
+           coverageLocations: ${{github.workspace}}/postal_items/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
