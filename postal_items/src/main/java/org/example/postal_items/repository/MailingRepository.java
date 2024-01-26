@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MailingRepository extends MongoRepository<Mailing, String> {
-    public Mailing findTopByOrderByMailingCodeDesc();
-    public Mailing findMailingByMailingCode(long mailingCode);
+    Mailing findTopByOrderByMailingCodeDesc();
+    Mailing findMailingByMailingCode(long mailingCode);
+    Mailing findMailingByRecipientName(String name);
 }

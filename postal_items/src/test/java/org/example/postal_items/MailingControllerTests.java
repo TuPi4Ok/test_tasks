@@ -1,40 +1,28 @@
 package org.example.postal_items;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.MongoClients;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 import org.example.postal_items.model.Mailing;
 import org.example.postal_items.model.MailingStatus;
 import org.example.postal_items.model.PostOffice;
 import org.example.postal_items.model.dto.MailingDto;
+import org.example.postal_items.repository.MailingRepository;
+import org.example.postal_items.repository.PostOfficeRepository;
 import org.instancio.Instancio;
 import org.instancio.Select;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +34,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@Testcontainers
 class MailingControllerTests {
-    @Autowired
-    private MongoTemplate mongoTemplate;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper om;
+    @Container
+    @ServiceConnection
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:4.0.10"));
+    @Autowired
+    PostOfficeRepository postOfficeRepository;
+    @Autowired
+    MailingRepository mailingRepository;
     private List<PostOffice> postOfficeList = new ArrayList<>();
     private List<Mailing> mailingList = new ArrayList<>();
 
@@ -72,26 +66,28 @@ class MailingControllerTests {
                 .create();
         return mailing;
     }
+    @BeforeAll
+    public static void beforeAll() {
+        mongoDBContainer.start();
+    }
     @BeforeEach
     public void beforeEach() {
         for (int i = 0; i < 5; i++) {
             var postOffice = createPostOffice();
-            mongoTemplate.save(postOffice, "postOffice");
+            postOfficeRepository.save(postOffice);
             postOfficeList.add(postOffice);
         }
 
         for (int i = 0; i < 5; i++) {
             var mailing = createMailing(i);
-            mongoTemplate.save(mailing, "mailing");
+            mailingRepository.save(mailing);
             mailingList.add(mailing);
         }
     }
     @AfterEach
     public void afterEach() {
-        mongoTemplate.remove(new Query(), "postOffice");
-        mongoTemplate.remove(new Query(), "mailing");
-        postOfficeList.clear();
-        mailingList.clear();
+        mailingRepository.deleteAll();
+        postOfficeRepository.deleteAll();
     }
     @Test
     public void createMailinTestPositive() throws Exception {
@@ -110,9 +106,7 @@ class MailingControllerTests {
         var body = result.getContentAsString();
 
         assertThat(body).contains(newMailing.getRecipientName(), newMailing.getRecipientAddress());
-
-        Query query = new Query(Criteria.where("recipientName").is(newMailing.getRecipientName()));
-        assertThat(mongoTemplate.find(query, Mailing.class)).isNotNull();
+        assertThat(mailingRepository.findMailingByRecipientName(newMailing.getRecipientName())).isNotNull();
     }
 
     @Test
@@ -136,7 +130,7 @@ class MailingControllerTests {
     public void arrivalMailingTestPositive() throws Exception {
         Mailing newMailing = createMailing(0);
         newMailing.setCurrentPostOffice(null);
-        mongoTemplate.save(newMailing);
+        mailingRepository.save(newMailing);
 
         var request = patch("/post/"+ postOfficeList.get(1).getPostalCode() + "/arrival/" + newMailing.getMailingCode());
 
@@ -172,7 +166,7 @@ class MailingControllerTests {
         Mailing newMailing = createMailing(0);
         newMailing.setCurrentPostOffice(postOfficeList.get(3));
         newMailing.setRecipientPostalCode(postOfficeList.get(3).getPostalCode());
-        mongoTemplate.save(newMailing);
+        mailingRepository.save(newMailing);
 
         var request = patch("/mailing/" + newMailing.getMailingCode());
 
@@ -211,7 +205,7 @@ class MailingControllerTests {
     public void departureMailingTestNegative() throws Exception {
         Mailing newMailing = createMailing(0);
         newMailing.setCurrentPostOffice(null);
-        mongoTemplate.save(newMailing);
+        mailingRepository.save(newMailing);
         var request = patch("/post/" + postOfficeList.get(0).getPostalCode() + "/departure/" + newMailing.getMailingCode());
 
         var result = mockMvc.perform(request)
@@ -273,7 +267,7 @@ class MailingControllerTests {
         Mailing newMailing = createMailing(0);
         newMailing.setCurrentPostOffice(postOfficeList.get(3));
         newMailing.setRecipientPostalCode(postOfficeList.get(1).getPostalCode());
-        mongoTemplate.save(newMailing);
+        mailingRepository.save(newMailing);
 
         var request = patch("/mailing/" + newMailing.getMailingCode());
 

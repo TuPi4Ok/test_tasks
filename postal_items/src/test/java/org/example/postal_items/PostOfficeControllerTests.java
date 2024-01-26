@@ -3,19 +3,23 @@ package org.example.postal_items;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.postal_items.model.PostOffice;
 import org.example.postal_items.model.dto.PostOfficeDto;
+import org.example.postal_items.repository.PostOfficeRepository;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +31,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@Testcontainers
 public class PostOfficeControllerTests {
-    @Autowired
-    MongoTemplate mongoTemplate;
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper om;
+    @Container
+    @ServiceConnection
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:4.0.10"));
     private List<PostOffice> postOfficeList = new ArrayList<>();
+    @Autowired
+    PostOfficeRepository postOfficeRepository;
 
     private PostOffice createPostOffice() {
         var postOffice = Instancio.of(PostOffice.class)
@@ -43,25 +51,26 @@ public class PostOfficeControllerTests {
         return postOffice;
     }
 
+    @BeforeAll
+    public static void beforeAll() {
+        mongoDBContainer.start();
+    }
     @BeforeEach
     public void beforeEach() {
         for (int i = 0; i < 5; i++) {
             var postOffice = createPostOffice();
-            mongoTemplate.save(postOffice, "postOffice");
+            postOfficeRepository.save(postOffice);
             postOfficeList.add(postOffice);
         }
     }
     @AfterEach
     public void afterEach() {
-        mongoTemplate.remove(new Query(), "postOffice");
-        mongoTemplate.remove(new Query(), "mailing");
-        postOfficeList.clear();
+        postOfficeRepository.deleteAll();
     }
 
     @Test
     public void createPostOfficeTestPositive() throws Exception {
         PostOfficeDto newPostOffice = Instancio.of(PostOfficeDto.class).create();
-
         var request = post("/post")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(newPostOffice));
@@ -74,14 +83,11 @@ public class PostOfficeControllerTests {
         var body = result.getContentAsString();
 
         assertThat(body).contains(newPostOffice.getAddress(), newPostOffice.getName());
-
-        Query query = new Query(Criteria.where("postalCode").is(newPostOffice.getPostalCode()));
-        assertThat(mongoTemplate.find(query, PostOffice.class)).isNotNull();
+        assertThat(postOfficeRepository.findPostOfficeByPostalCode(newPostOffice.getPostalCode())).isNotNull();
     }
 
     @Test
     public void getPostOfficesTestPositive() throws Exception {
-
         var request = get("/post");
 
         var result = mockMvc.perform(request)

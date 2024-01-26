@@ -36,8 +36,11 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'net.javacrumbs.json-unit:json-unit-assertj:3.2.2'
     implementation 'org.instancio:instancio-junit:3.3.0'
+    testImplementation "org.testcontainers:testcontainers:1.19.4"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.4"
+    testImplementation 'org.testcontainers:mongodb:1.19.3'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.35'
 }
 
 tasks.named('test') {
